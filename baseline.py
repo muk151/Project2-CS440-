@@ -11,11 +11,12 @@ class SearchResult:
     position: tuple[int, int]
     moves: int
     detectorActions: int
+    moveCost: float = 1
 
     @property
     def cost(self):
-        # a detector reading costs half as much as moving one cell
-        return self.moves + 0.5 * self.detectorActions
+        # movement can be free in question 6, while each reading still costs 0.5
+        return self.moveCost * self.moves + 0.5 * self.detectorActions
 
 
 class BaselineBot:
@@ -63,7 +64,8 @@ class BaselineBot:
             reading = self.detector.sense(self.position, lostPos, self.rng)
             self.detectorActions += 1
             if reading == "Found":
-                return SearchResult(self.position, self.moves, self.detectorActions)
+                return SearchResult(self.position, self.moves, self.detectorActions,
+                                    getattr(self, "moveCost", 1))
 
             # let bot one or bot three update its beliefs and pick a target
             self.updateKnowledge(reading)

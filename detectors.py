@@ -12,7 +12,7 @@ class detector:
         colDist = abs(locatorPos[1] - cell[1])
         return rowDist <= self.k and colDist <= self.k
     def probDetails(self, locatorPos, cell): # returns the prob of a ping, prob of no ping, and entropy of the reading for a given locatorPos and cell which will cache results for efficiency
-        if locatorPos in cell:
+        if locatorPos == cell:
             return 0.0, 0.0, 0.0
         rowDist = abs(locatorPos[0] - cell[0])
         colDist = abs(locatorPos[1] - cell[1])
@@ -21,7 +21,7 @@ class detector:
             dist = math.hypot(rowDist, colDist)
             expo = -(self.alpha) * (dist - 1)
             pingProb = math.exp(expo)
-            noPingProb = 1 - pingProb
+            noPingProb = -math.expm1(expo)
             readingEntropy = 0.0
             for prob in (pingProb, noPingProb):
                 if prob > 0:
